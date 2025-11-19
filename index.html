@@ -3,894 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaaS Admin Dashboard</title>
+    <title>Nebula</title>
+    <link rel="icon" type="image/x-icon" href="image copy.png">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --primary-light: #c7d2fe;
-            --secondary: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --gray: #94a3b8;
-            --gray-light: #e2e8f0;
-            --gray-dark: #475569;
-            --sidebar-width: 260px;
-            --header-height: 70px;
-            --transition: all 0.3s ease;
-        }
-
-        .dark-mode {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-tertiary: #334155;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-        }
-
-        .light-mode {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-tertiary: #f1f5f9;
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            transition: var(--transition);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        .app-container {
-            display: flex;
-            min-height: 100vh;
-            width: 100%;
-            overflow-x: hidden;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            width: var(--sidebar-width);
-            background-color: var(--bg-secondary);
-            border-right: 1px solid var(--border-color);
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            transition: var(--transition);
-            z-index: 100;
-        }
-
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            padding: 1.5rem 1.5rem 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: var(--primary);
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--primary), #7c3aed);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .sidebar-nav {
-            padding: 1rem 0;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1.5rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: var(--transition);
-            border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover {
-            background-color: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
-
-        .nav-item.active {
-            background-color: var(--primary-light);
-            color: var(--primary);
-            border-left-color: var(--primary);
-        }
-
-        .nav-item i {
-            margin-right: 0.75rem;
-            width: 20px;
-            text-align: center;
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-width);
-            transition: var(--transition);
-            width: calc(100% - var(--sidebar-width));
-            max-width: 100%;
-            overflow-x: hidden;
-        }
-
-        .header {
-            height: var(--header-height);
-            background-color: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 90;
-        }
-
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 1.25rem;
-            transition: var(--transition);
-        }
-
-        .theme-toggle:hover {
-            color: var(--text-primary);
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            transition: var(--transition);
-        }
-
-        .user-menu:hover {
-            background-color: var(--bg-tertiary);
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-        }
-
-        .user-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .user-name {
-            font-weight: 500;
-            font-size: 0.875rem;
-        }
-
-        .user-role {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        /* Content Area */
-        .content {
-            padding: 2rem;
-            width: 100%;
-            max-width: 100%;
-            overflow-x: hidden;
-        }
-
-        /* KPI Cards */
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            width: 100%;
-        }
-
-        .kpi-card {
-            background: linear-gradient(135deg, var(--primary), #7c3aed);
-            border-radius: 12px;
-            padding: 1.5rem;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            min-width: 0;
-        }
-
-        .kpi-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .kpi-icon {
-            width: 48px;
-            height: 48px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-        }
-
-        .kpi-title {
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-
-        .kpi-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .kpi-trend {
-            display: flex;
-            align-items: center;
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-
-        .kpi-trend i {
-            margin-right: 0.25rem;
-        }
-
-        /* Charts */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            width: 100%;
-        }
-
-        .chart-container {
-            background-color: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 1.5rem;
-            border: 1px solid var(--border-color);
-            min-width: 0;
-            overflow: hidden;
-        }
-
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .chart-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-        }
-
-        .chart-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .chart-action-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            background-color: var(--bg-tertiary);
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.875rem;
-            white-space: nowrap;
-        }
-
-        .chart-action-btn.active {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .chart-wrapper {
-            height: 300px;
-            position: relative;
-            width: 100%;
-        }
-
-        /* Data Table */
-        .data-table-container {
-            background-color: var(--bg-secondary);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            width: 100%;
-        }
-
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .table-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-        }
-
-        .table-actions {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-box input {
-            padding: 0.5rem 1rem 0.5rem 2.5rem;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 0.875rem;
-            width: 200px;
-            max-width: 100%;
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            white-space: nowrap;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-            width: 100%;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 800px;
-        }
-
-        th, td {
-            padding: 1rem 1.5rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            font-weight: 600;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .status-active {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .status-inactive {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
-        .plan-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .plan-basic {
-            background-color: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
-        }
-
-        .plan-pro {
-            background-color: rgba(139, 92, 246, 0.1);
-            color: #8b5cf6;
-        }
-
-        .plan-enterprise {
-            background-color: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .action-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--bg-tertiary);
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .action-btn:hover {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        /* Billing Cards */
-        .billing-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            width: 100%;
-        }
-
-        .plan-card {
-            background: linear-gradient(135deg, var(--primary), #7c3aed);
-            border-radius: 12px;
-            padding: 2rem;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .plan-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-        }
-
-        .plan-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .plan-badge-large {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .plan-price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-
-        .plan-features {
-            list-style: none;
-            margin-bottom: 2rem;
-        }
-
-        .plan-features li {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .plan-features li i {
-            margin-right: 0.75rem;
-        }
-
-        .plan-actions {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-white {
-            background-color: white;
-            color: var(--primary);
-            border: none;
-        }
-
-        .btn-outline-white {
-            background-color: transparent;
-            color: white;
-            border: 1px solid white;
-        }
-
-        /* Settings */
-        .settings-grid {
-            display: grid;
-            grid-template-columns: 1fr 3fr;
-            gap: 2rem;
-            width: 100%;
-        }
-
-        .settings-nav {
-            background-color: var(--bg-secondary);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-        }
-
-        .settings-nav-item {
-            display: block;
-            padding: 1rem 1.5rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            border-left: 3px solid transparent;
-            transition: var(--transition);
-        }
-
-        .settings-nav-item:hover, .settings-nav-item.active {
-            background-color: var(--bg-tertiary);
-            color: var(--text-primary);
-            border-left-color: var(--primary);
-        }
-
-        .settings-content {
-            background-color: var(--bg-secondary);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            padding: 2rem;
-        }
-
-        .settings-section {
-            margin-bottom: 2rem;
-        }
-
-        .settings-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            transition: var(--transition);
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .theme-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .theme-option {
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .theme-option.active {
-            border-color: var(--primary);
-        }
-
-        .theme-preview {
-            height: 100px;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .light-preview {
-            background: linear-gradient(to bottom, #f8fafc, #e2e8f0);
-        }
-
-        .dark-preview {
-            background: linear-gradient(to bottom, #1e293b, #0f172a);
-        }
-
-        .theme-preview::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            height: 20px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-        }
-
-        .theme-preview::after {
-            content: '';
-            position: absolute;
-            top: 40px;
-            left: 10px;
-            width: 60%;
-            height: 10px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-        }
-
-        .dark-preview::before, .dark-preview::after {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .theme-name {
-            font-weight: 500;
-            text-align: center;
-        }
-
-        /* Mobile Menu Button */
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.25rem;
-            cursor: pointer;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 1200px) {
-            .charts-grid, .billing-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .settings-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-            }
-            
-            .kpi-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .table-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .table-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .search-box input {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .kpi-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .chart-actions {
-                flex-wrap: wrap;
-            }
-            
-            .plan-actions {
-                flex-direction: column;
-            }
-            
-            .plan-actions .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .theme-options {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .content {
-                padding: 1rem;
-            }
-            
-            .header {
-                padding: 0 1rem;
-            }
-            
-            .user-info {
-                display: none;
-            }
-            
-            .table-actions {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .search-box {
-                width: 100%;
-            }
-            
-            .search-box input {
-                width: 100%;
-            }
-        }
-
-        /* Utility Classes */
-        .hidden {
-            display: none;
-        }
-
-        .text-success {
-            color: var(--success);
-        }
-
-        .text-muted {
-            color: var(--text-muted);
-        }
-    </style>
 </head>
 <body class="light-mode">
     <div class="app-container">
+        <!-- Sidebar Overlay for Mobile -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
-                    <div class="logo-icon">S</div>
-                    <span>SaaS Admin</span>
+                    <div class="logo-icon">N</div>
+                    <span class="logo-text">Nebula</span>
                 </div>
             </div>
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active" data-page="dashboard">
+                <a class="nav-item active" data-page="dashboard">
                     <i class="fas fa-home"></i>
-                    <span>Dashboard</span>
+                    <span class="nav-text">Dashboard</span>
                 </a>
-                <a href="#" class="nav-item" data-page="users">
+                <a class="nav-item" data-page="users">
                     <i class="fas fa-users"></i>
-                    <span>Users</span>
+                    <span class="nav-text">Users</span>
                 </a>
-                <a href="#" class="nav-item" data-page="billing">
+                <a class="nav-item" data-page="billing">
                     <i class="fas fa-credit-card"></i>
-                    <span>Billing</span>
+                    <span class="nav-text">Billing</span>
                 </a>
-                <a href="#" class="nav-item" data-page="settings">
+                <a class="nav-item" data-page="settings">
                     <i class="fas fa-cog"></i>
-                    <span>Settings</span>
+                    <span class="nav-text">Settings</span>
                 </a>
             </nav>
         </aside>
@@ -899,13 +45,13 @@
         <main class="main-content">
             <header class="header">
                 <div class="header-left">
-                    <button class="mobile-menu-btn">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn">
                         <i class="fas fa-bars"></i>
                     </button>
                     <h1 class="page-title">Dashboard</h1>
                 </div>
                 <div class="header-actions">
-                    <button class="theme-toggle">
+                    <button class="theme-toggle" id="theme-toggle">
                         <i class="fas fa-moon"></i>
                     </button>
                     <div class="user-menu">
@@ -991,9 +137,9 @@
                             <div class="chart-header">
                                 <h3 class="chart-title">Monthly Revenue</h3>
                                 <div class="chart-actions">
-                                    <button class="chart-action-btn active">Monthly</button>
-                                    <button class="chart-action-btn">Quarterly</button>
-                                    <button class="chart-action-btn">Yearly</button>
+                                    <button class="chart-action-btn active" data-period="monthly">Monthly</button>
+                                    <button class="chart-action-btn" data-period="quarterly">Quarterly</button>
+                                    <button class="chart-action-btn" data-period="yearly">Yearly</button>
                                 </div>
                             </div>
                             <div class="chart-wrapper">
@@ -1004,8 +150,8 @@
                             <div class="chart-header">
                                 <h3 class="chart-title">User Signups</h3>
                                 <div class="chart-actions">
-                                    <button class="chart-action-btn active">Weekly</button>
-                                    <button class="chart-action-btn">Monthly</button>
+                                    <button class="chart-action-btn active" data-period="weekly">Weekly</button>
+                                    <button class="chart-action-btn" data-period="monthly">Monthly</button>
                                 </div>
                             </div>
                             <div class="chart-wrapper">
@@ -1021,15 +167,15 @@
                             <div class="table-actions">
                                 <div class="search-box">
                                     <i class="fas fa-search"></i>
-                                    <input type="text" placeholder="Search users...">
+                                    <input type="text" id="user-search" placeholder="Search users...">
                                 </div>
-                                <button class="btn">
+                                <button class="btn" id="filter-btn">
                                     <i class="fas fa-filter"></i>
-                                    Filter
+                                    <span class="btn-text">Filter</span>
                                 </button>
-                                <button class="btn btn-primary">
+                                <button class="btn btn-primary" id="add-user-btn">
                                     <i class="fas fa-plus"></i>
-                                    Add User
+                                    <span class="btn-text">Add User</span>
                                 </button>
                             </div>
                         </div>
@@ -1044,109 +190,8 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div style="display: flex; align-items: center;">
-                                                <div class="user-avatar" style="margin-right: 10px;">JD</div>
-                                                <div>
-                                                    <div>John Doe</div>
-                                                    <div class="text-muted">john@example.com</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="status-badge status-active">
-                                                <i class="fas fa-check-circle"></i>
-                                                Active
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="plan-badge plan-pro">Pro</span>
-                                        </td>
-                                        <td>2023-06-15</td>
-                                        <td>
-                                            <div class="action-buttons">
-                                                <button class="action-btn">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button class="action-btn">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button class="action-btn">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="display: flex; align-items: center;">
-                                                <div class="user-avatar" style="margin-right: 10px;">JS</div>
-                                                <div>
-                                                    <div>Jane Smith</div>
-                                                    <div class="text-muted">jane@example.com</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="status-badge status-active">
-                                                <i class="fas fa-check-circle"></i>
-                                                Active
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="plan-badge plan-enterprise">Enterprise</span>
-                                        </td>
-                                        <td>2023-06-14</td>
-                                        <td>
-                                            <div class="action-buttons">
-                                                <button class="action-btn">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button class="action-btn">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button class="action-btn">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="display: flex; align-items: center;">
-                                                <div class="user-avatar" style="margin-right: 10px;">RJ</div>
-                                                <div>
-                                                    <div>Robert Johnson</div>
-                                                    <div class="text-muted">robert@example.com</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="status-badge status-inactive">
-                                                <i class="fas fa-times-circle"></i>
-                                                Inactive
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="plan-badge plan-basic">Basic</span>
-                                        </td>
-                                        <td>2023-05-20</td>
-                                        <td>
-                                            <div class="action-buttons">
-                                                <button class="action-btn">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button class="action-btn">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button class="action-btn">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                <tbody id="recent-users-table-body">
+                                    <!-- User rows will be populated by JavaScript -->
                                 </tbody>
                             </table>
                         </div>
@@ -1166,19 +211,19 @@
                             <div class="table-actions">
                                 <div class="search-box">
                                     <i class="fas fa-search"></i>
-                                    <input type="text" placeholder="Search users...">
+                                    <input type="text" id="all-users-search" placeholder="Search users...">
                                 </div>
-                                <button class="btn">
+                                <button class="btn" id="users-filter-btn">
                                     <i class="fas fa-filter"></i>
-                                    Filter
+                                    <span class="btn-text">Filter</span>
                                 </button>
-                                <button class="btn">
+                                <button class="btn" id="export-users-btn">
                                     <i class="fas fa-download"></i>
-                                    Export
+                                    <span class="btn-text">Export</span>
                                 </button>
-                                <button class="btn btn-primary">
+                                <button class="btn btn-primary" id="add-user-page-btn">
                                     <i class="fas fa-plus"></i>
-                                    Add User
+                                    <span class="btn-text">Add User</span>
                                 </button>
                             </div>
                         </div>
@@ -1193,7 +238,7 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="users-table-body">
                                     <!-- User rows will be populated by JavaScript -->
                                 </tbody>
                             </table>
@@ -1210,7 +255,7 @@
 
                     <div class="billing-grid">
                         <div>
-                            <div class="plan-card">
+                            <div class="plan-card" id="current-plan-card">
                                 <div class="plan-header">
                                     <div class="plan-name">Pro Plan</div>
                                     <span class="plan-badge-large">Active</span>
@@ -1224,8 +269,8 @@
                                     <li><i class="fas fa-check"></i> Advanced analytics</li>
                                 </ul>
                                 <div class="plan-actions">
-                                    <button class="btn btn-white">Change Plan</button>
-                                    <button class="btn btn-outline-white">Cancel Subscription</button>
+                                    <button class="btn btn-white" id="change-plan-btn">Change Plan</button>
+                                    <button class="btn btn-outline-white" id="cancel-subscription-btn">Cancel Subscription</button>
                                 </div>
                             </div>
 
@@ -1312,8 +357,8 @@
                                             <div class="text-muted">Expires 12/2024</div>
                                         </div>
                                     </div>
-                                    <button class="btn" style="width: 100%; justify-content: center;">
-                                        Update Payment Method
+                                    <button class="btn" id="update-payment-btn" style="width: 100%; justify-content: center;">
+                                        <span class="btn-text">Update Payment Method</span>
                                     </button>
                                 </div>
                             </div>
@@ -1332,8 +377,8 @@
                                     <div class="form-label">Tax ID</div>
                                     <div>US-123-456-789</div>
                                 </div>
-                                <button class="btn" style="width: 100%; justify-content: center;">
-                                    Edit Billing Information
+                                <button class="btn" id="edit-billing-btn" style="width: 100%; justify-content: center;">
+                                    <span class="btn-text">Edit Billing Information</span>
                                 </button>
                             </div>
                         </div>
@@ -1349,9 +394,9 @@
 
                     <div class="settings-grid">
                         <div class="settings-nav">
-                            <a href="#" class="settings-nav-item active" data-tab="general">General</a>
-                            <a href="#" class="settings-nav-item" data-tab="theme">Theme</a>
-                            <a href="#" class="settings-nav-item" data-tab="security">Security</a>
+                            <a class="settings-nav-item active" data-tab="general">General</a>
+                            <a class="settings-nav-item" data-tab="theme">Theme</a>
+                            <a class="settings-nav-item" data-tab="security">Security</a>
                         </div>
 
                         <div class="settings-content">
@@ -1386,7 +431,7 @@
                                         <option>German</option>
                                     </select>
                                 </div>
-                                <button class="btn btn-primary">Save Changes</button>
+                                <button class="btn btn-primary" id="save-general-btn">Save Changes</button>
                             </div>
 
                             <!-- Theme Settings -->
@@ -1419,12 +464,12 @@
                                     <label class="form-label" for="confirm-password">Confirm New Password</label>
                                     <input type="password" class="form-control" id="confirm-password">
                                 </div>
-                                <button class="btn btn-primary">Update Password</button>
+                                <button class="btn btn-primary" id="update-password-btn">Update Password</button>
 
                                 <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
                                     <h3 class="settings-title">Two-Factor Authentication</h3>
                                     <p class="text-muted" style="margin-bottom: 1rem;">Add an extra layer of security to your account by enabling two-factor authentication.</p>
-                                    <button class="btn">Enable 2FA</button>
+                                    <button class="btn" id="enable-2fa-btn">Enable 2FA</button>
                                 </div>
                             </div>
                         </div>
@@ -1434,351 +479,7 @@
         </main>
     </div>
 
-    <script>
-        // State Management
-        const state = {
-            theme: localStorage.getItem('dashboard-theme') || 'light',
-            activePage: 'dashboard',
-            users: [
-                { id: 1, name: 'John Doe', email: 'john@example.com', status: 'Active', lastActivity: '2023-06-15', plan: 'Pro' },
-                { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'Active', lastActivity: '2023-06-14', plan: 'Enterprise' },
-                { id: 3, name: 'Robert Johnson', email: 'robert@example.com', status: 'Inactive', lastActivity: '2023-05-20', plan: 'Basic' },
-                { id: 4, name: 'Emily Davis', email: 'emily@example.com', status: 'Active', lastActivity: '2023-06-10', plan: 'Pro' },
-                { id: 5, name: 'Michael Wilson', email: 'michael@example.com', status: 'Active', lastActivity: '2023-06-12', plan: 'Enterprise' },
-                { id: 6, name: 'Sarah Brown', email: 'sarah@example.com', status: 'Active', lastActivity: '2023-06-11', plan: 'Basic' }
-            ]
-        };
-
-        // DOM Elements
-        const sidebar = document.querySelector('.sidebar');
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const themeToggle = document.querySelector('.theme-toggle');
-        const navItems = document.querySelectorAll('.nav-item');
-        const pages = document.querySelectorAll('.page');
-        const settingsNavItems = document.querySelectorAll('.settings-nav-item');
-        const settingsTabs = document.querySelectorAll('.settings-tab');
-        const themeOptions = document.querySelectorAll('.theme-option');
-
-        // Initialize the application
-        function init() {
-            // Set initial theme
-            setTheme(state.theme);
-            
-            // Set up event listeners
-            setupEventListeners();
-            
-            // Initialize charts
-            initCharts();
-            
-            // Render users table
-            renderUsersTable();
-        }
-
-        // Set up event listeners
-        function setupEventListeners() {
-            // Mobile menu toggle
-            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
-            
-            // Theme toggle
-            themeToggle.addEventListener('click', toggleTheme);
-            
-            // Navigation
-            navItems.forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const page = item.getAttribute('data-page');
-                    setActivePage(page);
-                    
-                    // Close mobile menu if open
-                    if (sidebar.classList.contains('open')) {
-                        toggleMobileMenu();
-                    }
-                });
-            });
-            
-            // Settings navigation
-            settingsNavItems.forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const tab = item.getAttribute('data-tab');
-                    setActiveSettingsTab(tab);
-                });
-            });
-            
-            // Theme options
-            themeOptions.forEach(option => {
-                option.addEventListener('click', () => {
-                    const theme = option.getAttribute('data-theme');
-                    setTheme(theme);
-                });
-            });
-        }
-
-        // Toggle mobile menu
-        function toggleMobileMenu() {
-            sidebar.classList.toggle('open');
-        }
-
-        // Toggle theme
-        function toggleTheme() {
-            const newTheme = state.theme === 'light' ? 'dark' : 'light';
-            setTheme(newTheme);
-        }
-
-        // Set theme
-        function setTheme(theme) {
-            state.theme = theme;
-            document.body.className = `${theme}-mode`;
-            localStorage.setItem('dashboard-theme', theme);
-            
-            // Update theme toggle icon
-            const icon = themeToggle.querySelector('i');
-            icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-            
-            // Update active theme option
-            themeOptions.forEach(option => {
-                if (option.getAttribute('data-theme') === theme) {
-                    option.classList.add('active');
-                } else {
-                    option.classList.remove('active');
-                }
-            });
-            
-            // Re-render charts with new theme
-            initCharts();
-        }
-
-        // Set active page
-        function setActivePage(page) {
-            state.activePage = page;
-            
-            // Update navigation items
-            navItems.forEach(item => {
-                if (item.getAttribute('data-page') === page) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-            
-            // Update page content
-            pages.forEach(pageEl => {
-                if (pageEl.id === `${page}-page`) {
-                    pageEl.classList.remove('hidden');
-                    pageEl.classList.add('active');
-                } else {
-                    pageEl.classList.add('hidden');
-                    pageEl.classList.remove('active');
-                }
-            });
-            
-            // Update page title
-            const pageTitle = document.querySelector('.page-title');
-            pageTitle.textContent = page.charAt(0).toUpperCase() + page.slice(1);
-        }
-
-        // Set active settings tab
-        function setActiveSettingsTab(tab) {
-            // Update navigation items
-            settingsNavItems.forEach(item => {
-                if (item.getAttribute('data-tab') === tab) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-            
-            // Update tab content
-            settingsTabs.forEach(tabEl => {
-                if (tabEl.id === `${tab}-tab`) {
-                    tabEl.classList.remove('hidden');
-                    tabEl.classList.add('active');
-                } else {
-                    tabEl.classList.add('hidden');
-                    tabEl.classList.remove('active');
-                }
-            });
-        }
-
-        // Initialize charts
-        function initCharts() {
-            // Revenue Chart
-            const revenueCtx = document.getElementById('revenueChart');
-            if (revenueCtx) {
-                // Destroy existing chart if it exists
-                if (revenueCtx.chart) {
-                    revenueCtx.chart.destroy();
-                }
-                
-                revenueCtx.chart = new Chart(revenueCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                        datasets: [
-                            {
-                                label: 'Revenue',
-                                data: [4000, 3000, 2000, 2780, 1890, 2390, 3490, 4000, 3000, 2000, 2780, 1890],
-                                borderColor: '#4f46e5',
-                                backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                                tension: 0.4,
-                                fill: true
-                            },
-                            {
-                                label: 'Users',
-                                data: [2400, 1398, 9800, 3908, 4800, 3800, 4300, 2400, 1398, 9800, 3908, 4800],
-                                borderColor: '#10b981',
-                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                                tension: 0.4,
-                                fill: true
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                                labels: {
-                                    color: state.theme === 'light' ? '#64748b' : '#cbd5e1'
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                grid: {
-                                    color: state.theme === 'light' ? '#e2e8f0' : '#334155'
-                                },
-                                ticks: {
-                                    color: state.theme === 'light' ? '#64748b' : '#94a3b8'
-                                }
-                            },
-                            y: {
-                                grid: {
-                                    color: state.theme === 'light' ? '#e2e8f0' : '#334155'
-                                },
-                                ticks: {
-                                    color: state.theme === 'light' ? '#64748b' : '#94a3b8'
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Signups Chart
-            const signupsCtx = document.getElementById('signupsChart');
-            if (signupsCtx) {
-                // Destroy existing chart if it exists
-                if (signupsCtx.chart) {
-                    signupsCtx.chart.destroy();
-                }
-                
-                signupsCtx.chart = new Chart(signupsCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7'],
-                        datasets: [{
-                            label: 'User Signups',
-                            data: [400, 300, 200, 278, 189, 239, 349],
-                            backgroundColor: '#4f46e5',
-                            borderRadius: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                                labels: {
-                                    color: state.theme === 'light' ? '#64748b' : '#cbd5e1'
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                grid: {
-                                    color: state.theme === 'light' ? '#e2e8f0' : '#334155'
-                                },
-                                ticks: {
-                                    color: state.theme === 'light' ? '#64748b' : '#94a3b8'
-                                }
-                            },
-                            y: {
-                                grid: {
-                                    color: state.theme === 'light' ? '#e2e8f0' : '#334155'
-                                },
-                                ticks: {
-                                    color: state.theme === 'light' ? '#64748b' : '#94a3b8'
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        }
-
-        // Render users table
-        function renderUsersTable() {
-            const usersTableBody = document.querySelector('#users-page table tbody');
-            if (usersTableBody) {
-                usersTableBody.innerHTML = '';
-                
-                state.users.forEach(user => {
-                    const row = document.createElement('tr');
-                    
-                    // Determine status badge class
-                    const statusClass = user.status === 'Active' ? 'status-active' : 'status-inactive';
-                    const statusIcon = user.status === 'Active' ? 'fa-check-circle' : 'fa-times-circle';
-                    
-                    // Determine plan badge class
-                    let planClass = 'plan-basic';
-                    if (user.plan === 'Pro') planClass = 'plan-pro';
-                    if (user.plan === 'Enterprise') planClass = 'plan-enterprise';
-                    
-                    row.innerHTML = `
-                        <td>
-                            <div style="display: flex; align-items: center;">
-                                <div class="user-avatar" style="margin-right: 10px;">${user.name.split(' ').map(n => n[0]).join('')}</div>
-                                <div>
-                                    <div>${user.name}</div>
-                                    <div class="text-muted">${user.email}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="status-badge ${statusClass}">
-                                <i class="fas ${statusIcon}"></i>
-                                ${user.status}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="plan-badge ${planClass}">${user.plan}</span>
-                        </td>
-                        <td>${user.lastActivity}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="action-btn">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="action-btn">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    `;
-                    
-                    usersTableBody.appendChild(row);
-                });
-            }
-        }
-
-        // Initialize the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
